@@ -3,11 +3,11 @@ from random import randrange
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, no_of_players):
         self.players = []
-        self.places = [0] * 6
-        self.purses = [0] * 6
-        self.in_penalty_box = [0] * 6
+        self.places = [0] * no_of_players
+        self.purses = [0] * no_of_players
+        self.in_penalty_box = [0] * no_of_players
 
         self.pop_questions = []
         self.science_questions = []
@@ -42,9 +42,9 @@ class Game:
 
     def add(self, player_name):
         self.players.append(player_name)
-        self.places[self.how_many_players] = 0
-        self.purses[self.how_many_players] = 0
-        self.in_penalty_box[self.how_many_players] = False
+        self.places[self.how_many_players - 1] = 0
+        self.purses[self.how_many_players - 1] = 0
+        self.in_penalty_box[self.how_many_players - 1] = False
 
         print(player_name + " was added")
         print("They are player number %s" % len(self.players))
@@ -56,6 +56,10 @@ class Game:
         return len(self.players)
 
     def roll(self, roll):
+        if not(self.is_playable()):
+            print("Need to least 2 active players")
+            exit(0)
+
         print("%s is the current player" % self.players[self.current_player])
         print("They have rolled a %s" % roll)
 
@@ -88,17 +92,22 @@ class Game:
             self._ask_question()
 
     def _ask_question(self):
-        try:
-            if self._current_category == 'Pop':
-                print(self.pop_questions.pop(0))
-            elif self._current_category == 'Science':
-                print(self.science_questions.pop(0))
-            elif self._current_category == 'Sports':
-                print(self.sports_questions.pop(0))
-            elif self._current_category == 'Rock':
-                print(self.rock_questions.pop(0))
-        except IndexError:
-            print("No more questions in this category")
+        if self._current_category == 'Pop':
+            question = self.pop_questions.pop(0)
+            print(question)
+            self.pop_questions.append(question)
+        elif self._current_category == 'Science':
+            question = self.science_questions.pop(0)
+            print(question)
+            self.science_questions.append(question)
+        elif self._current_category == 'Sports':
+            question = self.sports_questions.pop(0)
+            print(question)
+            self.sports_questions.append(question)
+        elif self._current_category == 'Rock':
+            question = self.rock_questions.pop(0)
+            print(question)
+            self.rock_questions.append(question)
 
     @property
     def _current_category(self):
@@ -122,12 +131,14 @@ class Game:
 
                 winner = self._did_player_win()
                 self.current_player += 1
-                if self.current_player == len(self.players): self.current_player = 0
+                if self.current_player == len(self.players):
+                    self.current_player = 0
 
                 return winner
             else:
                 self.current_player += 1
-                if self.current_player == len(self.players): self.current_player = 0
+                if self.current_player == len(self.players):
+                    self.current_player = 0
                 return True
 
 
@@ -143,7 +154,8 @@ class Game:
 
             winner = self._did_player_win()
             self.current_player += 1
-            if self.current_player == len(self.players): self.current_player = 0
+            if self.current_player == len(self.players):
+                self.current_player = 0
 
             return winner
 
@@ -170,11 +182,10 @@ class Game:
 if __name__ == '__main__':
     not_a_winner = True
 
-    game = Game()
+    game = Game(10)
 
-    game.add('Chet')
-    game.add('Pat')
-    game.add('Sue')
+    for i in range(10):
+        game.add("Player " + str(i))
 
     while not_a_winner:
         game.roll(randrange(5) + 1)
