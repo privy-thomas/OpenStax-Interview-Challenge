@@ -20,13 +20,22 @@ class Game:
         self.WIN_CONDITION = 6
 
         for i in range(50):
-            self.pop_questions.append("Pop Question %s" % i)
-            self.science_questions.append("Science Question %s" % i)
-            self.sports_questions.append("Sports Question %s" % i)
-            self.rock_questions.append("Rock Question %s" % i)
+            self.create_pop_questions("Pop Question %s" % i)
+            self.create_science_questions("Science Question %s" % i)
+            self.create_sports_questions("Sports Question %s" % i)
+            self.create_rock_question("Rock Question %s" % i)
 
-    def create_rock_question(self, index):
-        return "Rock Question %s" % index
+    def create_pop_questions(self, question):
+        self.pop_questions.append(question)
+
+    def create_science_questions(self, question):
+        self.science_questions.append(question)
+
+    def create_sports_questions(self, question):
+        self.sports_questions.append(question)
+
+    def create_rock_question(self, question):
+        self.rock_questions.append(question)
 
     def is_playable(self):
         return self.how_many_players >= 2
@@ -79,10 +88,17 @@ class Game:
             self._ask_question()
 
     def _ask_question(self):
-        if self._current_category == 'Pop': print(self.pop_questions.pop(0))
-        if self._current_category == 'Science': print(self.science_questions.pop(0))
-        if self._current_category == 'Sports': print(self.sports_questions.pop(0))
-        if self._current_category == 'Rock': print(self.rock_questions.pop(0))
+        try:
+            if self._current_category == 'Pop':
+                print(self.pop_questions.pop(0))
+            elif self._current_category == 'Science':
+                print(self.science_questions.pop(0))
+            elif self._current_category == 'Sports':
+                print(self.sports_questions.pop(0))
+            elif self._current_category == 'Rock':
+                print(self.rock_questions.pop(0))
+        except IndexError:
+            print("No more questions in this category")
 
     @property
     def _current_category(self):
@@ -145,7 +161,7 @@ class Game:
         return not (self.purses[self.current_player] == self.WIN_CONDITION)
 
     def answer_question(self, answer):
-        if answer == 0:
+        if answer == 0:  # check if answer was correct
             return self.was_correctly_answered()
         else:
             return self.wrong_answer()
@@ -162,13 +178,10 @@ if __name__ == '__main__':
 
     while not_a_winner:
         game.roll(randrange(5) + 1)
-
-        # game.roll(11)
-
-        # if randrange(9) == 7:
-        '''if randrange(2) == 1:
-            not_a_winner = game.wrong_answer()
-        else:
-            not_a_winner = game.was_correctly_answered()'''
         ans = randrange(2)
         not_a_winner = game.answer_question(ans)
+
+    print("\n\n", game.pop_questions)
+    print(game.rock_questions)
+    print(game.science_questions)
+    print(game.sports_questions)
