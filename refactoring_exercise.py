@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from random import randrange
+
 
 class Game:
     def __init__(self):
@@ -15,11 +17,13 @@ class Game:
         self.current_player = 0
         self.is_getting_out_of_penalty_box = False
 
+        self.WIN_CONDITION = 6
+
         for i in range(50):
             self.pop_questions.append("Pop Question %s" % i)
             self.science_questions.append("Science Question %s" % i)
             self.sports_questions.append("Sports Question %s" % i)
-            self.rock_questions.append(self.create_rock_question(i))
+            self.rock_questions.append("Rock Question %s" % i)
 
     def create_rock_question(self, index):
         return "Rock Question %s" % index
@@ -82,15 +86,12 @@ class Game:
 
     @property
     def _current_category(self):
-        if self.places[self.current_player] == 0: return 'Pop'
-        if self.places[self.current_player] == 4: return 'Pop'
-        if self.places[self.current_player] == 8: return 'Pop'
-        if self.places[self.current_player] == 1: return 'Science'
-        if self.places[self.current_player] == 5: return 'Science'
-        if self.places[self.current_player] == 9: return 'Science'
-        if self.places[self.current_player] == 2: return 'Sports'
-        if self.places[self.current_player] == 6: return 'Sports'
-        if self.places[self.current_player] == 10: return 'Sports'
+        if self.places[self.current_player] % 4 == 0:
+            return 'Pop'
+        elif self.places[self.current_player] % 4 == 1:
+            return 'Science'
+        elif self.places[self.current_player] % 4 == 2:
+            return 'Sports'
         return 'Rock'
 
     def was_correctly_answered(self):
@@ -136,17 +137,22 @@ class Game:
         self.in_penalty_box[self.current_player] = True
 
         self.current_player += 1
-        if self.current_player == len(self.players): self.current_player = 0
+        if self.current_player == len(self.players):
+            self.current_player = 0
         return True
 
     def _did_player_win(self):
-        return not (self.purses[self.current_player] == 6)
+        return not (self.purses[self.current_player] == self.WIN_CONDITION)
 
+    def answer_question(self, answer):
+        if answer == 0:
+            return self.was_correctly_answered()
+        else:
+            return self.wrong_answer()
 
-from random import randrange
 
 if __name__ == '__main__':
-    not_a_winner = False
+    not_a_winner = True
 
     game = Game()
 
@@ -154,12 +160,15 @@ if __name__ == '__main__':
     game.add('Pat')
     game.add('Sue')
 
-    while True:
+    while not_a_winner:
         game.roll(randrange(5) + 1)
 
-        if randrange(9) == 7:
+        # game.roll(11)
+
+        # if randrange(9) == 7:
+        '''if randrange(2) == 1:
             not_a_winner = game.wrong_answer()
         else:
-            not_a_winner = game.was_correctly_answered()
-
-        if not not_a_winner: break
+            not_a_winner = game.was_correctly_answered()'''
+        ans = randrange(2)
+        not_a_winner = game.answer_question(ans)
