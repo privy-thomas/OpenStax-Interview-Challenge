@@ -196,8 +196,3 @@ if __name__ == '__main__':
         if is_eligible_for_question:
             ans = randrange(2)
             not_a_winner = game.answer_question(ans)
-
-    print("\n\n", game.pop_questions)
-    print(game.rock_questions)
-    print(game.science_questions)
-    print(game.sports_questions)
