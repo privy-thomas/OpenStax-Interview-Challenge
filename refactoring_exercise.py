@@ -177,7 +177,7 @@ class Game:
         return not (self.purses[self.current_player] == self.WIN_CONDITION)
 
     def answer_question(self, answer):
-        if answer == 0:  # check if answer was correct
+        if answer == 7:  # check if answer was correct
             return self.was_correctly_answered()
         else:
             return self.wrong_answer()
@@ -194,5 +194,5 @@ if __name__ == '__main__':
     while not_a_winner:
         is_eligible_for_question = game.roll(randrange(5) + 1)
         if is_eligible_for_question:
-            ans = randrange(2)
+            ans = randrange(9)
             not_a_winner = game.answer_question(ans)
