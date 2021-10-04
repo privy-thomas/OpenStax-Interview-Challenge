@@ -77,9 +77,14 @@ class Game:
                             str(self.places[self.current_player]))
                 print("The category is %s" % self._current_category)
                 self._ask_question()
+                return True
             else:
                 print("%s is not getting out of the penalty box" % self.players[self.current_player])
                 self.is_getting_out_of_penalty_box = False
+                self.current_player += 1
+                if self.current_player == len(self.players):
+                    self.current_player = 0
+                return False
         else:
             self.places[self.current_player] = self.places[self.current_player] + roll
             if self.places[self.current_player] > 11:
@@ -90,6 +95,7 @@ class Game:
                         str(self.places[self.current_player]))
             print("The category is %s" % self._current_category)
             self._ask_question()
+            return True
 
     def _ask_question(self):
         if self._current_category == 'Pop':
@@ -141,8 +147,6 @@ class Game:
                     self.current_player = 0
                 return True
 
-
-
         else:
 
             print("Answer was corrent!!!!")
@@ -188,9 +192,10 @@ if __name__ == '__main__':
         game.add("Player " + str(i))
 
     while not_a_winner:
-        game.roll(randrange(5) + 1)
-        ans = randrange(2)
-        not_a_winner = game.answer_question(ans)
+        is_eligible_for_question = game.roll(randrange(5) + 1)
+        if is_eligible_for_question:
+            ans = randrange(2)
+            not_a_winner = game.answer_question(ans)
 
     print("\n\n", game.pop_questions)
     print(game.rock_questions)
